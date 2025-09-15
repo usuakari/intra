@@ -1,0 +1,10 @@
+<h1>{{ parent.name }} のコンテンツ</h1>
+<ul>
+  {% for child in parent.children.all %}
+    {% for content in child.content_set.all %}
+      <li>{{ content.title }}（カテゴリ：{{ content.category.name }}）</li>
+    {% empty %}
+      <li>コンテンツはありません</li>
+    {% endfor %}
+  {% endfor %}
+</ul>

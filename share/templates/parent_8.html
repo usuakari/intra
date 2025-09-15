@@ -1,0 +1,24 @@
+<!-- share/templates/parent_8.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<body>
+  <h1>{{ parent.name }} のコンテンツ</h1>
+
+  {% comment %} 親=8配下の子カテゴリに属するコンテンツを列挙 {% endcomment %}
+  {% for child in children %}
+    <h2>子カテゴリ: {{ child.name }}</h2>
+    <ul>
+      {% for c in child.content_set.all %}
+        <li>
+          <strong>{{ c.title }}</strong>
+          （カテゴリ: {{ c.category.name }} / 更新: {{ c.updated_at|date:"Y-m-d" }}）
+          {% if c.file_url %} - <a href="{{ c.file_url }}" target="_blank">開く</a>{% endif %}
+        </li>
+      {% empty %}
+        <li>この子カテゴリにはコンテンツがありません。</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</body>
+{% endblock %}
