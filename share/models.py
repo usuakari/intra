@@ -41,6 +41,13 @@ class Category(models.Model):
         # related_name="children"
     )
 
+    @property
+    def parent(self):
+        """親カテゴリのオブジェクトを返す（なければNone）"""
+        if self.parent_id:
+            return Category.objects.filter(id=self.parent_id).first()
+        return None
+
     class Meta:
         db_table = "カテゴリ"
         verbose_name = "カテゴリ"
