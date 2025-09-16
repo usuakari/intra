@@ -1,12 +1,10 @@
+# views.py
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, ListView, DetailView
-from .models import Category
-
-# Create your views here.
+from django.views.generic import TemplateView
+from .models import Category, Content
 
 class TopView(TemplateView):
     template_name = "top.html"
-    
 
 class KenshuView(TemplateView):
     template_name = "kenshu.html"
@@ -14,13 +12,35 @@ class KenshuView(TemplateView):
 class ToiawaseView(TemplateView):
     template_name = "toiawase.html"
 
-def parent_contents(request, parent_id):
+def parent_contents(request, parent_id: int):
     parent = get_object_or_404(Category, id=parent_id)
 
-    # テンプレートファイル名を動的に決める
-    template_name = f"parent_{parent_id}.html"
+    # 左メニュー用：この親にぶら下がる子カテゴリ
+    children_qs = Category.objects.filter(parent_id=parent.id).order_by("name")
+
+    # 右側メイン：親配下（= 子カテゴリに属する）コンテンツを取得
+    contents_qs = (
+        Content.objects
+        .select_related("category")       # category.name をテンプレで使う前提
+        .filter(category__parent_id=parent.id)
+        .order_by("category__name", "-updated_at")
+    )
+
+    # 1ファイルで共通化する方がメンテ性が高いので、固定名のテンプレに寄せます
+    template_name = "parent_generic.html"
 
     return render(request, template_name, {
         "parent": parent,
-        "children": parent.children.all().prefetch_related("content_set"),
+        "children": children_qs,     # 左メニュー
+        "contents": contents_qs,     # 右側テーブル
+        # 子カテゴリごとにグルーピングしたい場合に便利な dict も渡しておく
+        "contents_by_child": _group_by_child(contents_qs),
     })
+
+def _group_by_child(contents_qs):
+    """{child_category: [Content,...]} へ整形（テンプレ側で使いやすいように）"""
+    from collections import OrderedDict
+    grouped = OrderedDict()
+    for c in contents_qs:
+        grouped.setdefault(c.category, []).append(c)
+    return grouped

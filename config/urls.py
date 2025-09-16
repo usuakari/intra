@@ -26,5 +26,6 @@ urlpatterns = [
     path('share/kenshu.html',KenshuView.as_view(), name = "kenshu"),
     path('share/',ToiawaseView.as_view(), name = "toiawase"),
     path("parent/<int:parent_id>/", views.parent_contents, name="parent_contents"),
+    path("category/<int:parent_id>/", views.parent_contents, name="parent_contents"),
 
 ]
