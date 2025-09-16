@@ -22,10 +22,10 @@ from share import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", TopView.as_view(), name = "top"),
     path('share/kenshu.html',KenshuView.as_view(), name = "kenshu"),
     path('share/',ToiawaseView.as_view(), name = "toiawase"),
     path("parent/<int:parent_id>/", views.parent_contents, name="parent_contents"),
     path("category/<int:parent_id>/", views.parent_contents, name="parent_contents"),
+    path("", views.parent_contents, {"parent_id": 8}, name="parent_contents_default"),
 
 ]
