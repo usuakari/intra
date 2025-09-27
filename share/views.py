@@ -1,7 +1,8 @@
 # views.py
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView , CreateView
 from .models import Category, Content
+from .forms import ContentForm
 
 class TopView(TemplateView):
     template_name = "top.html"
@@ -26,7 +27,7 @@ def parent_contents(request, parent_id: int):
         .order_by("category__name", "-updated_at")
     )
 
-    # 1ファイルで共通化する方がメンテ性が高いので、固定名のテンプレに寄せます
+    #1ファイルで共通化する方がメンテ性が高いので、固定名のテンプレに寄せます
     template_name = "parent_generic.html"
 
     return render(request, template_name, {
@@ -44,3 +45,20 @@ def _group_by_child(contents_qs):
     for c in contents_qs:
         grouped.setdefault(c.category, []).append(c)
     return grouped
+
+class ContentCreateView(CreateView):
+    model = Content
+    form_class = ContentForm
+    template_name = "content_form.html"
+
+    # success_url = reverse_lazy("top")  # 保存後にリダイレクトしたい先
+
+def category_contents(request, category_id: int):
+    category = get_object_or_404(Category, id=category_id)
+    form = ContentForm()
+    template_name = "content_form.html"
+
+    return render(request, template_name, {
+        "form": form,
+        "category": category,
+    })

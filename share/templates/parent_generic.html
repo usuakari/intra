@@ -12,8 +12,9 @@
   {# 子カテゴリごとに見出し＋テーブルで束ねる例 #}
   {% for child, rows in contents_by_child.items %}
     <h2 id="child-{{ child.id }}" class="h5 mt-4 mb-2">
-      {{ child.name }}
+      {{ child.name }} 
     </h2>
+    <button class="btn btn-primary" onclick="javascript:location.href='content/add/{{child.id}}'">追加</button>
     <div class="table-responsive">
       <table class="table table-sm table-hover align-middle">
         <thead class="table-light">
