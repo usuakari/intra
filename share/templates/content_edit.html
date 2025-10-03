@@ -10,36 +10,40 @@
     {% csrf_token %}
     <div class="mb-3">
       <label for="id_administrator" class="form-label">管理者</label>
-      {{ update.administrator }}
+      {{ form.administrator }}
     </div>
 
     <div class="mb-3">
       <label for="id_category" class="form-label">カテゴリ</label>
-      {{ update.category }}
+      {{ form.category }}
     </div>
 
     <div class="mb-3">
       <label for="id_title" class="form-label">タイトル</label>
-      {{ update.title }}
+      {{ form.title }}
     </div>
     <div class="mb-3">
       <label for="id_description" class="form-label">概要説明</label>
-      {{ update.description }}
+      {{ form.description }}
     </div>
     <div class="mb-3">
       <label for="id_updater_user_id" class="form-label">更新者ID</label>
-      {{ update.updater_user_id }}
+      {{ form.updater_user_id }}
     </div>
     <div class="mb-3">
       <label for="id_file_url" class="form-label">ファイルURL</label>
-      {{ update.file_url }}
+      {{ form.file_url }}
     </div>
     <div class="mb-3">
       <label for="id_file_type" class="form-label">ファイル種別</label>
-      {{ update.file_type }}
+      {{ form.file_type }}
     </div>
 
-    <button type="submit" class="btn btn-primary">登録する</button>
+    <button type="submit" class="btn btn-primary">変更する</button>
   </form>
+  <form method="post" action="{% url 'content_delete' content.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" onclick="return confirm('本当に削除しますか？');">削除</button>
+</form>
 </div>
 {% endblock %}

@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404 , redirect
 from django.views.generic import TemplateView , CreateView , UpdateView
 from .models import Category, Content
 from .forms import ContentForm , ContentCreateForm
+from django.views.decorators.http import require_POST
 
 class TopView(TemplateView):
     template_name = "top.html"
@@ -70,7 +71,7 @@ def category_contents(request, category_id: int):
             obj.save()                              # ← DBにINSERT
             return redirect("parent_contents_default")
         else : print("form errors", form.errors)
-                              # ← 成功時はリダイレクト（任意）
+                        # ← 成功時はリダイレクト（任意）
     else:
         form = ContentCreateForm()
 
@@ -79,30 +80,31 @@ def category_contents(request, category_id: int):
         "category": category,
     })
 
-class ContentUpdateView(UpdateView):
-    model = Content
-    form_class = ContentForm
-    template_name_suffix = 'update_form'
-
 def content_edit(request, content_id: int):
     content = get_object_or_404(Content, id=content_id)
-    update = ContentForm(instance=content)
+    form = ContentForm(instance=content)
     template_name = "content_edit.html"
 
     if request.method == "POST":
-        form = ContentForm(request.POST)
-        form.category = category         # ← POSTデータをバインド
+        form = ContentForm(request.POST, instance=content)
+        form.content = content         # ← POSTデータをバインド
         if form.is_valid():                         # ← バリデーション
             obj = form.save(commit=False)           # ← まだDBに書かない
-            obj.category = category          # ← URLのカテゴリを紐づける（DB問い合わせ不要）
+            obj.category = content.category          # ← URLのカテゴリを紐づける（DB問い合わせ不要）
             # obj.updater_user_id = request.user.id # ← ログインIDを使うならここで上書き
             obj.save()                              # ← DBにINSERT
             return redirect("parent_contents_default")
         else : print("form errors", form.errors)
+    else:
+        form = ContentForm(instance=content)
 
     return render(request, template_name, {
-        "update": update,
-        "content": content_id,
+        "form": form,
+        "content": content,
     })
 
-
+@require_POST
+def content_delete(request, content_id):
+    content = get_object_or_404(Content, id=content_id)
+    content.delete()
+    return redirect("parent_contents_default")  # 適切なリダイレクト先に変更

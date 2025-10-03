@@ -27,5 +27,6 @@ urlpatterns = [
     path("", views.parent_contents, {"parent_id": 8}, name="parent_contents_default"),
     path("content/add/<int:category_id>", views.category_contents, name="content_add"),
     path("content/edit/<int:content_id>", views.content_edit, name="edit"),
+    path("content/<int:content_id>/delete/", views.content_delete, name="content_delete"),
 
 ]
