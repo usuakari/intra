@@ -1,0 +1,45 @@
+<!-- share/templates/content_edit.html -->
+{% extends "base.html" %}
+{% block title %}コンテンツ編集{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h1 class="h4 mb-3">コンテンツ編集フォーム</h1>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id_administrator" class="form-label">管理者</label>
+      {{ update.administrator }}
+    </div>
+
+    <div class="mb-3">
+      <label for="id_category" class="form-label">カテゴリ</label>
+      {{ update.category }}
+    </div>
+
+    <div class="mb-3">
+      <label for="id_title" class="form-label">タイトル</label>
+      {{ update.title }}
+    </div>
+    <div class="mb-3">
+      <label for="id_description" class="form-label">概要説明</label>
+      {{ update.description }}
+    </div>
+    <div class="mb-3">
+      <label for="id_updater_user_id" class="form-label">更新者ID</label>
+      {{ update.updater_user_id }}
+    </div>
+    <div class="mb-3">
+      <label for="id_file_url" class="form-label">ファイルURL</label>
+      {{ update.file_url }}
+    </div>
+    <div class="mb-3">
+      <label for="id_file_type" class="form-label">ファイル種別</label>
+      {{ update.file_type }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">登録する</button>
+  </form>
+</div>
+{% endblock %}

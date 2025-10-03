@@ -1,8 +1,8 @@
 # views.py
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView , CreateView
+from django.shortcuts import render, get_object_or_404 , redirect
+from django.views.generic import TemplateView , CreateView , UpdateView
 from .models import Category, Content
-from .forms import ContentForm
+from .forms import ContentForm , ContentCreateForm
 
 class TopView(TemplateView):
     template_name = "top.html"
@@ -38,6 +38,7 @@ def parent_contents(request, parent_id: int):
         "contents_by_child": _group_by_child(contents_qs),
     })
 
+
 def _group_by_child(contents_qs):
     """{child_category: [Content,...]} へ整形（テンプレ側で使いやすいように）"""
     from collections import OrderedDict
@@ -55,10 +56,53 @@ class ContentCreateView(CreateView):
 
 def category_contents(request, category_id: int):
     category = get_object_or_404(Category, id=category_id)
-    form = ContentForm()
+    form = ContentCreateForm()
     template_name = "content_form.html"
+
+    print(category_id)
+    if request.method == "POST":
+        form = ContentCreateForm(request.POST)
+        form.category = category         # ← POSTデータをバインド
+        if form.is_valid():                         # ← バリデーション
+            obj = form.save(commit=False)           # ← まだDBに書かない
+            obj.category = category           # ← URLのカテゴリを紐づける（DB問い合わせ不要）
+            # obj.updater_user_id = request.user.id # ← ログインIDを使うならここで上書き
+            obj.save()                              # ← DBにINSERT
+            return redirect("parent_contents_default")
+        else : print("form errors", form.errors)
+                              # ← 成功時はリダイレクト（任意）
+    else:
+        form = ContentCreateForm()
 
     return render(request, template_name, {
         "form": form,
         "category": category,
     })
+
+class ContentUpdateView(UpdateView):
+    model = Content
+    form_class = ContentForm
+    template_name_suffix = 'update_form'
+
+def content_edit(request, content_id: int):
+    content = get_object_or_404(Content, id=content_id)
+    update = ContentForm(instance=content)
+    template_name = "content_edit.html"
+
+    if request.method == "POST":
+        form = ContentForm(request.POST)
+        form.category = category         # ← POSTデータをバインド
+        if form.is_valid():                         # ← バリデーション
+            obj = form.save(commit=False)           # ← まだDBに書かない
+            obj.category = category          # ← URLのカテゴリを紐づける（DB問い合わせ不要）
+            # obj.updater_user_id = request.user.id # ← ログインIDを使うならここで上書き
+            obj.save()                              # ← DBにINSERT
+            return redirect("parent_contents_default")
+        else : print("form errors", form.errors)
+
+    return render(request, template_name, {
+        "update": update,
+        "content": content_id,
+    })
+
+

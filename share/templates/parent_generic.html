@@ -15,10 +15,12 @@
       {{ child.name }} 
     </h2>
     <button class="btn btn-primary" onclick="javascript:location.href='content/add/{{child.id}}'">追加</button>
+    
     <div class="table-responsive">
       <table class="table table-sm table-hover align-middle">
         <thead class="table-light">
           <tr>
+            <th></th>
             <th>タイトル</th>
             <th>更新者ID</th>
             <th>更新日</th>
@@ -29,6 +31,9 @@
         <tbody>
           {% for c in rows %}
             <tr>
+              <td>
+                <a class="btn btn-primary" href="{% url 'edit' content_id=c.id %}">編集</a>
+              </td>
               <td class="fw-semibold">{{ c.title }}</td>
               <td>{{ c.updater_user_id }}</td>
               <td>{{ c.updated_at|date:"Y-m-d H:i" }}</td>

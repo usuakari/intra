@@ -88,6 +88,7 @@ class Content(models.Model):
         verbose_name="表示名称（タイトル）",
         max_length=200
     )
+
     description = models.TextField(
         verbose_name="概要説明",
         blank=True, null=True

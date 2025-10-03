@@ -1,3 +1,4 @@
+<!-- share/templates/content_form.html -->
 {% extends "base.html" %}
 {% block title %}コンテンツ追加{% endblock %}
 
@@ -5,37 +6,49 @@
 <div class="container my-4">
   <h1 class="h4 mb-3">コンテンツ追加フォーム</h1>
 
-  <form method="post" novalidate>
-    <input type="hidden" name="category_id" value="{{category.id}}">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="id_administrator" class="form-label">管理者</label>
-      {{ form.administrator }}
-    </div>
+<form method="post" novalidate>
+  {% csrf_token %}
 
+  {{ form.non_field_errors }}
+  <input type="hidden" name="category_id" value="{{category.id}}">
 
-    <div class="mb-3">
-      <label for="id_title" class="form-label">タイトル</label>
-      {{ form.title }}
-    </div>
-    <div class="mb-3">
-      <label for="id_description" class="form-label">概要説明</label>
-      {{ form.description }}
-    </div>
-    <div class="mb-3">
-      <label for="id_updater_user_id" class="form-label">更新者ID</label>
-      {{ form.updater_user_id }}
-    </div>
-    <div class="mb-3">
-      <label for="id_file_url" class="form-label">ファイルURL</label>
-      {{ form.file_url }}
-    </div>
-    <div class="mb-3">
-      <label for="id_file_type" class="form-label">ファイル種別</label>
-      {{ form.file_type }}
-    </div>
+  <div class="mb-3">
+    <label for="id_administrator" class="form-label">管理者</label>
+    {{ form.administrator }}
+    <div class="text-danger small">{{ form.administrator.errors }}</div>
+  </div>
 
-    <button type="submit" class="btn btn-primary">登録する</button>
-  </form>
-</div>
+  <div class="mb-3">
+    <label for="id_title" class="form-label">タイトル</label>
+    {{ form.title }}
+    <div class="text-danger small">{{ form.title.errors }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_description" class="form-label">概要説明</label>
+    {{ form.description }}
+    <div class="text-danger small">{{ form.description.errors }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_updater_user_id" class="form-label">更新者ID</label>
+    {{ form.updater_user_id }}
+    <div class="text-danger small">{{ form.updater_user_id.errors }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_file_url" class="form-label">ファイルURL</label>
+    {{ form.file_url }}
+    <div class="text-danger small">{{ form.file_url.errors }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label for="id_file_type" class="form-label">ファイル種別</label>
+    {{ form.file_type }}
+    <div class="text-danger small">{{ form.file_type.errors }}</div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">登録する</button>
+</form>
+
 {% endblock %}
