@@ -41,11 +41,14 @@ def parent_contents(request, parent_id: int):
 
 
 def _group_by_child(contents_qs):
+    print("contents_qs=",contents_qs)
     """{child_category: [Content,...]} へ整形（テンプレ側で使いやすいように）"""
     from collections import OrderedDict
     grouped = OrderedDict()
     for c in contents_qs:
         grouped.setdefault(c.category, []).append(c)
+        print("c.category=",c.category)
+    print("grouped",grouped)
     return grouped
 
 class ContentCreateView(CreateView):
@@ -81,9 +84,13 @@ def category_contents(request, category_id: int):
     })
 
 def content_edit(request, content_id: int):
+    nottop_categories = Category.objects.filter(parent_id__isnull=False)
+    print("nottop_categories",nottop_categories)
+    
     content = get_object_or_404(Content, id=content_id)
     form = ContentForm(instance=content)
     template_name = "content_edit.html"
+
 
     if request.method == "POST":
         form = ContentForm(request.POST, instance=content)
@@ -101,6 +108,7 @@ def content_edit(request, content_id: int):
     return render(request, template_name, {
         "form": form,
         "content": content,
+        "nottop_categories": nottop_categories,
     })
 
 def content_delete(request, content_id):

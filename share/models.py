@@ -54,7 +54,7 @@ class Category(models.Model):
         verbose_name_plural = "カテゴリ"
 
     def __str__(self):
-        return self.name
+        return f"{self.id} {self.name}"
 
 
 class Content(models.Model):
@@ -80,9 +80,6 @@ class Content(models.Model):
     @property
     def parent_category_name(self):
         return self.category.parent.name if self.category and self.category.parent else None
-
-    def __str__(self):
-        return self.title
 
     title = models.CharField(
         verbose_name="表示名称（タイトル）",
@@ -117,4 +114,4 @@ class Content(models.Model):
         verbose_name_plural = "コンテンツ"
 
     def __str__(self):
-        return self.title
+        return f"{self.id} {self.title}"

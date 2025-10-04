@@ -15,7 +15,12 @@
 
     <div class="mb-3">
       <label for="id_category" class="form-label">カテゴリ</label>
-      {{ form.category }}
+      <select name="category" class="form-select" id="id_category">
+        <option value="{{content.category.id}}" selected> {{content.category.name}} </option>        
+        {% for cat in nottop_categories %}
+          <option value="{{cat.id}}"> {{cat.name}} </option> 
+        {% endfor %}
+      </select>
     </div>
 
     <div class="mb-3">
