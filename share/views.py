@@ -103,7 +103,6 @@ def content_edit(request, content_id: int):
         "content": content,
     })
 
-@require_POST
 def content_delete(request, content_id):
     content = get_object_or_404(Content, id=content_id)
     content.delete()

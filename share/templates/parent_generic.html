@@ -21,6 +21,7 @@
         <thead class="table-light">
           <tr>
             <th></th>
+            <th></th>
             <th>タイトル</th>
             <th>更新者ID</th>
             <th>更新日</th>
@@ -32,7 +33,10 @@
           {% for c in rows %}
             <tr>
               <td>
-                <a class="btn btn-primary" href="{% url 'edit' content_id=c.id %}">編集・削除</a>
+                <a class="btn btn-primary" href="{% url 'edit' content_id=c.id %}">編集</a>
+              </td>
+              <td>
+                <a class="btn btn-primary" href="{% url 'content_delete' content_id=c.id %}">削除</a>
               </td>
               <td class="fw-semibold">{{ c.title }}</td>
               <td>{{ c.updater_user_id }}</td>
