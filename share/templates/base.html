@@ -13,8 +13,23 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand fw-bold text-primary" href="{% url 'parent_contents_default' %}">社内ポータル</a>
+    
     </div>
-  </nav>
+        <div class="container-fluid">
+      <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <input class="nav-link" type="submit" value="管理者ログイン">
+      </form>
+    </div>
+
+    <div class="container-fluid">
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <input class="nav-link" type="submit" value="ログアウト">
+      </form>
+    </div>
+
+      </nav>
 
   <!-- 親カテゴリ切替ナビ -->
   <div class="bg-light border-bottom">

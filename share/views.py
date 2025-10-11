@@ -4,15 +4,19 @@ from django.views.generic import TemplateView , CreateView , UpdateView
 from .models import Category, Content
 from .forms import ContentForm , ContentCreateForm
 from django.views.decorators.http import require_POST
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import AuthenticationForm
 
-class TopView(TemplateView):
+
+'''class TopView(TemplateView):
     template_name = "top.html"
 
 class KenshuView(TemplateView):
     template_name = "kenshu.html"
 
 class ToiawaseView(TemplateView):
-    template_name = "toiawase.html"
+    template_name = "toiawase.html"'''
 
 def parent_contents(request, parent_id: int):
     parent = get_object_or_404(Category, id=parent_id)
@@ -115,3 +119,10 @@ def content_delete(request, content_id):
     content = get_object_or_404(Content, id=content_id)
     content.delete()
     return redirect("parent_contents_default")  # 適切なリダイレクト先に変更
+
+class LoginView(LoginView):
+    form_class = AuthenticationForm
+    template_name = "login.html"
+
+class LogoutView(LogoutView):
+    template_name = "logged_out.html"

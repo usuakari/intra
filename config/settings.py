@@ -125,5 +125,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ログイン認証
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'list'
-LOGOUT_REDIRECT_URL = 'top'
+LOGIN_REDIRECT_URL = 'parent_contents_default'
+LOGOUT_REDIRECT_URL = 'parent_contents_default'
