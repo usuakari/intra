@@ -14,10 +14,12 @@
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <a class="navbar-brand fw-bold text-primary" href="{% url 'parent_contents_default' %}">社内ポータル</a>
       
-      <div class="d-flex gap-2"> 
+        <div class="d-flex gap-2"> 
+        {% if user.is_authenticated %}
         <div class="container-fluid">
           <a href="{% url 'category_edit' %}" class="btn btn-outline-secondary btn-sm">カテゴリ編集</a>
         </div>
+        {% endif %}
 
         <div class="container-fluid">
           <form action="{% url 'login' %}" method="post">

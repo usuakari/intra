@@ -45,12 +45,12 @@ class Category(models.Model):
 
     category_display_order_tabs = models.PositiveIntegerField(
         verbose_name="表示順(タブ)",
-        null=False, blank=False,
+        null=True, blank=True,
     )
 
     category_display_order_leftmenues = models.PositiveIntegerField(
     verbose_name="表示順(左メニュー)",
-    null=False, blank=False,
+    null=True, blank=True,
     )
 
     @property
@@ -85,7 +85,7 @@ class Content(models.Model):
 
     contents_display_order = models.PositiveIntegerField(
         verbose_name="表示順(コンテンツ)",
-        null=False, blank=False,
+        null=True, blank=True,
     )
 
     # 親カテゴリID
