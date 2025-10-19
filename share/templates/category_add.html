@@ -11,21 +11,32 @@
     {% csrf_token %}
 
     {{ form.non_field_errors }}
-    <input type="text" name="new_category" id="id_new_category" class="form-control mt-2" placeholder="新しいカテゴリ名" >カテゴリの追加</input>
-    {%  load static %}
-    <img src="{% static 'img/category_image.png' %}" alt="カテゴリの追加">
+    <label  for="id_name" name="new_category" id="id_name" class="form-label" >新しいタブ／カテゴリ名</label>
+    {{ form.name }}
+    <div class="form-label">※以下画像の「TOP・お知らせ」に相当するタブや、「あいさつ」に相当するカテゴリを追加します</div>
+    <img src="{% static 'category_image.png' %}" alt="Category Image" class="img-fluid mb-3" style="max-width: 400px;">
 
-<div class="mb-3">
-    <label for="id_category" class="form-label">タブ・の追加／選択</label>
-    <select name="category" class="form-select" id="id_category">        
-        {% for cat in top_categories %}
-        <option value="{{cat.id}}"> {{cat.name}} </option> 
-        {% endfor %}
-        <option value="new"> 新しいカテゴリを追加</option>
-    </select>
+    <div class="mb-3">
+        <label for="id_parent_category" class="form-label">タブ・の追加／選択</label>
+        <div class="form-label">※タブを追加したい場合は「タブを追加する」のまま、既存のタブ内に配置する場合はタブ名を選択してください。</div>
+            <select name="parent_id"  class="form-select" id="id_parent_id">
+            <!--ブランク値なら親カテゴリIDを持たないのでタブ追加扱い-->
+                <option value=""> タブを追加する </option>        
+                {% for cat in top_categories %}
+                    <option value="{{ cat.id }}"> {{cat.name}} </option> 
+                {% endfor %}        
+            </select>
+        </div>
+    <div class="mb-3">
+        <label for="id_category_display_order_tabs" class="form-label">表示順（タブ）</label>
+        {{ form.category_display_order_tabs }}
+    </div>
+    <div class="mb-3">
+        <label for="id_category_display_order_leftmenues" class="form-label">表示順（左メニュー）</label>
+        {{ form.category_display_order_leftmenues }}
+    </div>
 
-    <!-- 新しいカテゴリ入力欄（初期は非表示） -->
-    <input type="text" name="new_category" id="id_new_category" class="form-control mt-2" placeholder="新しいカテゴリ名" style="display: none;">
+
 </div>
 
 <button type="submit" class="btn btn-primary">登録する</button>
@@ -33,18 +44,4 @@
 </form>
 </div>
 
-<script>
-    const select = document.getElementById('id_category');
-    const newCatInput = document.getElementById('id_new_category');
-
-    select.addEventListener('change', function() {
-    if (this.value === 'new') {
-        newCatInput.style.display = 'block';
-        newCatInput.required = true;
-    } else {
-        newCatInput.style.display = 'none';
-        newCatInput.required = false;
-    }
-    });
-</script>
 {% endblock %}

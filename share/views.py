@@ -2,13 +2,14 @@
 from django.shortcuts import render, get_object_or_404 , redirect
 from django.views.generic import TemplateView , CreateView , UpdateView
 from .models import Category, Content
-from .forms import ContentForm , ContentCreateForm
+from .forms import ContentForm , ContentCreateForm, CategoryCreateForm
 from django.views.decorators.http import require_POST
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
 from functools import wraps
 from django.http import HttpResponse
+from django.forms import modelformset_factory
 
 '''class TopView(TemplateView):
     template_name = "top.html"
@@ -34,14 +35,14 @@ def parent_contents(request, parent_id: int):
     parent = get_object_or_404(Category, id=parent_id)
 
     # 左メニュー用：この親にぶら下がる子カテゴリ
-    children_qs = Category.objects.filter(parent_id=parent.id).order_by("name")
+    children_qs = Category.objects.filter(parent_id=parent.id).order_by("category_display_order_leftmenues") #表示順を追加
 
     # 右側メイン：親配下（= 子カテゴリに属する）コンテンツを取得
     contents_qs = (
         Content.objects
         .select_related("category")       # category.name をテンプレで使う前提
         .filter(category__parent_id=parent.id)
-        .order_by("category__name", "-updated_at")
+        .order_by("contents_display_order") #表示順を追加
     )
 
     #1ファイルで共通化する方がメンテ性が高いので、固定名のテンプレに寄せます
@@ -63,8 +64,8 @@ def _group_by_child(contents_qs):
     grouped = OrderedDict()
     for c in contents_qs:
         grouped.setdefault(c.category, []).append(c)
-        print("c.category=",c.category)
-    print("grouped",grouped)
+        #print("c.category=",c.category)
+    #print("grouped",grouped)
     return grouped
 
 class ContentCreateView(CreateView):
@@ -80,7 +81,6 @@ def category_contents(request, category_id: int):
     form = ContentCreateForm()
     template_name = "content_form.html"
 
-    print(category_id)
     if request.method == "POST":
         form = ContentCreateForm(request.POST)
         form.category = category         # ← POSTデータをバインド
@@ -104,7 +104,7 @@ def category_contents(request, category_id: int):
 def content_edit(request, content_id: int):
     nottop_categories = Category.objects.filter(parent_id__isnull=False)
     
-    print("nottop_categories",nottop_categories)
+    #print("nottop_categories",nottop_categories)
     
     content = get_object_or_404(Content, id=content_id)
     selected_top_category = Category.objects.filter(id=content.category.parent_id).first()
@@ -140,29 +140,64 @@ def content_delete(request, content_id):
 
 @login_required_custom
 def category_add(request,):
-    form = ContentCreateForm()
+    
+    form = CategoryCreateForm()
     template_name = "category_add.html"
-    category = None
     top_categories = Category.objects.filter(parent_id__isnull=True)
 
     if request.method == "POST":
-        form = ContentCreateForm(request.POST)
-        form.category = category         # ← POSTデータをバインド
+        data = request.POST.copy()
+        print("POST内容:", request.POST)
+        if data.get("parent_id"):
+            data["parent_id"] = int(data["parent_id"])
+            print("form parent_id=",request.POST.get("parent_id"))
+            print("form name=",request.POST.get("name"))
+            form = CategoryCreateForm(data)
+        
+        else:
+            print("整数型でない（未選択など）")
+            print("form parent_id=",request.POST.get("parent_id"))
+            print("form name=",request.POST.get("name"))
+            form = CategoryCreateForm(request.POST)
+
         if form.is_valid():                         # ← バリデーション
-            obj = form.save(commit=False)           # ← まだDBに書かない
-            obj.category = category           # ← URLのカテゴリを紐づける（DB問い合わせ不要）
-            # obj.updater_user_id = request.user.id # ← ログインIDを使うならここで上書き
-            obj.save()                              # ← DBにINSERT
-            return redirect("parent_contents_default")
+                obj = form.save(commit=False)           # ← まだDBに書かない
+                # obj.updater_user_id = request.user.id # ← ログインIDを使うならここで上書き
+                obj.save()                              # ← DBにINSERT
+                return redirect("parent_contents_default")
         else : print("form errors", form.errors)
-                        # ← 成功時はリダイレクト（任意）
+            
     else:
-        form = ContentCreateForm()
+        form = CategoryCreateForm()
 
     return render(request, template_name, {
         "form": form,
-        "category": category,
         "top_categories": top_categories,
+    })
+
+@login_required_custom
+def category_edit(request):
+    template_name = "category_edit.html"
+
+    # モデルフォームセットを作成（CategoryCreateFormをベースにする）
+    CategoryFormSet = modelformset_factory(
+        Category,
+        form=CategoryCreateForm,
+        extra=0  # 既存データのみ（新規行は作らない）
+    )
+
+    if request.method == "POST":
+        formset = CategoryFormSet(request.POST)
+        print("POST内容:", request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect("parent_contents_default")
+    else:
+        formset = CategoryFormSet(queryset=Category.objects.all().order_by("id"))
+        print("form errors", formset.errors)
+
+    return render(request, template_name, {
+        "formset": formset,
     })
 
 class LoginView(LoginView):

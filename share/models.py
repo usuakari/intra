@@ -33,12 +33,24 @@ class Category(models.Model):
         verbose_name="カテゴリ名",
         max_length=100
     )
+
+    
     parent_id = models.PositiveIntegerField(
         # "self",
         db_column="親カテゴリ",
         #　on_delete=models.SET_NULL,    親削除時に子を孤児化
         null=True, blank=True,
         # related_name="children"
+    )
+
+    category_display_order_tabs = models.PositiveIntegerField(
+        verbose_name="表示順(タブ)",
+        null=False, blank=False,
+    )
+
+    category_display_order_leftmenues = models.PositiveIntegerField(
+    verbose_name="表示順(左メニュー)",
+    null=False, blank=False,
     )
 
     @property
@@ -69,6 +81,11 @@ class Content(models.Model):
         Category,
         on_delete=models.CASCADE,
         db_column="カテゴリID"
+    )
+
+    contents_display_order = models.PositiveIntegerField(
+        verbose_name="表示順(コンテンツ)",
+        null=False, blank=False,
     )
 
     # 親カテゴリID

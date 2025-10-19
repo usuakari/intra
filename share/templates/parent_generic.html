@@ -3,7 +3,7 @@
 {% block title %}{{ parent.name }} | 社内ポータル{% endblock %}
 
 {% block left_menu %}
-  {% include "includes/_left_menu_children.html" with parent=parent children=children only %}
+  {% include "includes/_left_menu_children.html" with parent=parent children=children %}
 {% endblock %}
 
 {% block content %}
@@ -13,9 +13,6 @@
   {% for child, rows in contents_by_child.items %}
     <h2 id="child-{{ child.id }}" class="h5 mt-4 mb-2">
       {{ child.name }} 
-      {% if user.is_authenticated %}
-      <a class="btn btn-primary" href="{% url 'content_add' category_id=child.id %}">追加</a>
-      {% endif %}
     </h2>
       
     <div class="table-responsive">
@@ -23,6 +20,7 @@
         <thead class="table-light">
           <tr>
             {% if user.is_authenticated %}
+              <th>表示順</th>
               <th></th>
               <th></th>
             {% endif %}
@@ -37,6 +35,9 @@
           {% for c in rows %}
             <tr>
               {% if user.is_authenticated %}
+              <td>
+                {{ c.contents_display_order }}
+              </td>
               <td>
                 <a class="btn btn-primary" href="{% url 'edit' content_id=c.id %}">編集</a>
               </td>
@@ -63,6 +64,6 @@
       </table>
     </div>
   {% empty %}
-    <div class="alert alert-secondary">配下コンテンツはありません。</div>
+    <div class="alert alert-secondary">配下コンテンツはありません。「カテゴリ」横の「追加」ボタンを押してコンテンツを追加してください。</div>
   {% endfor %}
 {% endblock %}

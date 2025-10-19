@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>カテゴリ一覧・編集</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ formset.management_form }}  <!-- ← フォームセットには必須 -->
+
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+            <th>カテゴリID</th>
+            <th>親カテゴリID</th>
+          <th>タブ表示順</th>
+          <th>左メニュー表示順</th>
+          <!-- <th>タブ名（親カテゴリ）</th> -->
+          <th>カテゴリ名</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for form in formset %}
+          <tr>
+            <td>{{ form.id }}</td>
+            <td>{{ form.parent_id }}</td>
+            <td>{{ form.category_display_order_tabs }}</td>
+            <td>{{ form.category_display_order_leftmenues }}</td>
+            <!-- <td>{{ form.parent_id }}</td> -->
+            <td>{{ form.name }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="text-muted">カテゴリはありません</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <button type="submit" class="btn btn-primary">変更を保存</button>
+</form>
+{% endblock %}

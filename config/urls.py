@@ -31,5 +31,6 @@ urlpatterns = [
     path("login/", views.LoginView.as_view(), name="login"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("category_add/", views.category_add, name="category_add"),
+    path("category_edit/", views.category_edit, name="category_edit"),
 
 ]

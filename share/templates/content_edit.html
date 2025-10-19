@@ -16,7 +16,6 @@
 
     <div class="mb-3">
       <label for="id_category" class="form-label">カテゴリ</label>
-      <!-- <a href="" class="">カテゴリの追加</a> -->
       <select name="category" class="form-select" id="id_category">       
         {% for cat in nottop_categories %}
           <option value="{{cat.id}}" {% if cat.id == content.category.id %} selected {% endif %}> 
@@ -24,6 +23,11 @@
           </option> 
         {% endfor %}
       </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_content_display_order" class="form-label">表示順（カテゴリ内）</label>
+      {{ form.contents_display_order }}
     </div>
 
     <div class="mb-3">

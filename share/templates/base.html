@@ -16,10 +16,7 @@
       
       <div class="d-flex gap-2"> 
         <div class="container-fluid">
-          <form action="{% url 'category_add' %}" method="post">
-            {% csrf_token %}
-            <input class="btn btn-outline-primary btn-sm" type="submit" value="タブ・カテゴリの追加">
-          </form>
+          <a href="{% url 'category_edit' %}" class="btn btn-outline-secondary btn-sm">カテゴリ編集</a>
         </div>
 
         <div class="container-fluid">
@@ -35,8 +32,6 @@
             <input class="btn btn-outline-secondary btn-sm" type="submit" value="ログアウト">
           </form>
         </div>
-
-
       </div>
     </div>
   </nav>
@@ -48,13 +43,29 @@
         {% for cat in parent_categories %}
           <li class="nav-item">
             <a class="nav-link {% if parent and parent.id == cat.id %}active{% endif %}"
-               href="{% url 'parent_contents' parent_id=cat.id %}">
+              href="{% url 'parent_contents' parent_id=cat.id %}">
+              {% if user.is_authenticated %}
+                {{cat.category_display_order_tabs}}
+              {% endif %}
               {{ cat.name }}
+              
             </a>
           </li>
+          {% if user.is_authenticated %}
+            {% if forloop.last %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'category_add' %}">
+                タブを追加
+                </a>
+              </li>
+            {% endif %}
+          {% endif %}
+
         {% empty %}
           <li class="nav-item text-muted small p-2">親カテゴリが未登録です</li>
         {% endfor %}
+
+
       </ul>
     </div>
   </div>

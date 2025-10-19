@@ -10,7 +10,20 @@
         <!-- 子カテゴリページに遷移させたいなら URL を用意（child向けDetail等） -->
         <!-- いったん親配下コンテンツのアンカーへ飛ぶパターンの例 -->
         <a class="text-decoration-none" href="#child-{{ child.id }}">{{ child.name }}</a>
+        {% if user.is_authenticated %}
+        <div > {{ child.category_display_order_leftmenues }} </div>
+        <a class="btn btn-primary" href="{% url 'content_add' category_id=child.id %}">追加</a>
+        {% endif %}
       </li>
+      {% if user.is_authenticated %}
+        {% if forloop.last %}
+          <li >
+            <a class="btn btn-primary" href="{% url 'category_add' %}">
+            カテゴリの追加
+            </a>
+          </li>
+        {% endif %}
+      {% endif %}
     {% empty %}
       <li class="list-group-item text-muted">子カテゴリはありません</li>
     {% endfor %}

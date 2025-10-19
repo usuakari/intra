@@ -25,6 +25,11 @@
   </div>
 
   <div class="mb-3">
+    <label for="id_content_display_order" class="form-label">表示順（カテゴリ内）</label>
+    {{ form.contents_display_order }}
+  </div>
+
+  <div class="mb-3">
     <label for="id_description" class="form-label">概要説明</label>
     {{ form.description }}
     <div class="text-danger small">{{ form.description.errors }}</div>
