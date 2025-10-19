@@ -16,6 +16,13 @@
       
       <div class="d-flex gap-2"> 
         <div class="container-fluid">
+          <form action="{% url 'category_add' %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-outline-primary btn-sm" type="submit" value="タブ・カテゴリの追加">
+          </form>
+        </div>
+
+        <div class="container-fluid">
           <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
             <input class="btn btn-outline-primary btn-sm" type="submit" value="管理者ログイン">
@@ -28,6 +35,8 @@
             <input class="btn btn-outline-secondary btn-sm" type="submit" value="ログアウト">
           </form>
         </div>
+
+
       </div>
     </div>
   </nav>

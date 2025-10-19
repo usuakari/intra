@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{%  load static %}
+{% block title %}タブ（親カテゴリ）・カテゴリ追加{% endblock %}
+
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="h4 mb-3">カテゴリ追加</h1>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+    <input type="text" name="new_category" id="id_new_category" class="form-control mt-2" placeholder="新しいカテゴリ名" >カテゴリの追加</input>
+    {%  load static %}
+    <img src="{% static 'img/category_image.png' %}" alt="カテゴリの追加">
+
+<div class="mb-3">
+    <label for="id_category" class="form-label">タブ・の追加／選択</label>
+    <select name="category" class="form-select" id="id_category">        
+        {% for cat in top_categories %}
+        <option value="{{cat.id}}"> {{cat.name}} </option> 
+        {% endfor %}
+        <option value="new"> 新しいカテゴリを追加</option>
+    </select>
+
+    <!-- 新しいカテゴリ入力欄（初期は非表示） -->
+    <input type="text" name="new_category" id="id_new_category" class="form-control mt-2" placeholder="新しいカテゴリ名" style="display: none;">
+</div>
+
+<button type="submit" class="btn btn-primary">登録する</button>
+
+</form>
+</div>
+
+<script>
+    const select = document.getElementById('id_category');
+    const newCatInput = document.getElementById('id_new_category');
+
+    select.addEventListener('change', function() {
+    if (this.value === 'new') {
+        newCatInput.style.display = 'block';
+        newCatInput.required = true;
+    } else {
+        newCatInput.style.display = 'none';
+        newCatInput.required = false;
+    }
+    });
+</script>
+{% endblock %}

@@ -1,5 +1,6 @@
 <!-- share/templates/content_edit.html -->
 {% extends "base.html" %}
+{% load static %}
 {% block title %}コンテンツ編集{% endblock %}
 
 {% block content %}
@@ -15,10 +16,12 @@
 
     <div class="mb-3">
       <label for="id_category" class="form-label">カテゴリ</label>
-      <select name="category" class="form-select" id="id_category">
-        <option value="{{content.category.id}}" selected> {{content.category.name}} </option>        
+      <!-- <a href="" class="">カテゴリの追加</a> -->
+      <select name="category" class="form-select" id="id_category">       
         {% for cat in nottop_categories %}
-          <option value="{{cat.id}}"> {{cat.name}} </option> 
+          <option value="{{cat.id}}" {% if cat.id == content.category.id %} selected {% endif %}> 
+            {{cat.parent.name}} - {{cat.name}} 
+          </option> 
         {% endfor %}
       </select>
     </div>

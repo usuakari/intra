@@ -30,5 +30,6 @@ urlpatterns = [
     path("content/<int:content_id>/delete/", views.content_delete, name="content_delete"),
     path("login/", views.LoginView.as_view(), name="login"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
+    path("category_add/", views.category_add, name="category_add"),
 
 ]
