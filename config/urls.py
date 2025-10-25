@@ -32,5 +32,6 @@ urlpatterns = [
     path("logout/", views.LogoutView.as_view(), name="logout"),
     path("category_add/", views.category_add, name="category_add"),
     path("category_edit/", views.category_edit, name="category_edit"),
+    path("content_add_with_category/<int:category_id>", views.content_add_with_category, name="content_add_with_category"),
 
 ]

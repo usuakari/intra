@@ -54,6 +54,7 @@ def parent_contents(request, parent_id: int):
         "contents": contents_qs,     # 右側テーブル
         # 子カテゴリごとにグルーピングしたい場合に便利な dict も渡しておく
         "contents_by_child": _group_by_child(contents_qs),
+        "current_parent_id": parent_id,
     })
 
 
@@ -183,7 +184,8 @@ def category_edit(request):
     CategoryFormSet = modelformset_factory(
         Category,
         form=CategoryCreateForm,
-        extra=0  # 既存データのみ（新規行は作らない）
+        extra=0,  # 既存データのみ（新規行は作らない）
+        can_delete=True  # 削除用チェックボックスを追加
     )
 
     if request.method == "POST":
@@ -206,3 +208,34 @@ class LoginView(LoginView):
 
 class LogoutView(LogoutView):
     template_name = "logged_out.html"
+
+@login_required_custom
+def content_add_with_category(request, category_id: int):
+    category = get_object_or_404(Category, id=category_id)
+    parent_id = category.id
+
+    if request.method == "POST":
+        content_form = ContentCreateForm(request.POST)
+        category_form = CategoryCreateForm(request.POST)
+
+        if content_form.is_valid() and category_form.is_valid():
+            # 新しいカテゴリを保存
+            new_category = category_form.save()
+
+            # コンテンツを新しいカテゴリに紐づけて保存
+            content = content_form.save(commit=False)
+            content.category = new_category
+            content.save()
+
+            return redirect("parent_contents_default")
+
+    else:
+        content_form = ContentCreateForm()
+        category_form = CategoryCreateForm()
+
+    return render(request, "content_add_with_category.html", {
+        "content_form": content_form,
+        "category_form": category_form,
+        "category_id": category.id,   # ← ここは整数のまま渡す
+        "parent_id": parent_id,
+    })

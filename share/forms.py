@@ -57,8 +57,8 @@ class CategoryCreateForm(forms.ModelForm):
             "parent_id", #親カテゴリID
             "category_display_order_tabs", #表示順(タブ)
             "category_display_order_leftmenues", #表示順(左メニュー)
-
         ]
+        
         widgets = {
             "id": forms.NumberInput(attrs={"class": "form-control", "readonly": "readonly"}),
             "name": forms.TextInput(attrs={"class": "form-control"}),

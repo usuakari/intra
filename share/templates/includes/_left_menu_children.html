@@ -12,15 +12,13 @@
         <a class="text-decoration-none" href="#child-{{ child.id }}">{{ child.name }}</a>
         {% if user.is_authenticated %}
         <div > {{ child.category_display_order_leftmenues }} </div>
-        <a class="btn btn-primary" href="{% url 'content_add' category_id=child.id %}">追加</a>
+        <!--<a class="btn btn-primary" href="{% url 'content_add' category_id=child.id %}">追加</a>-->
         {% endif %}
       </li>
       {% if user.is_authenticated %}
         {% if forloop.last %}
           <li >
-            <a class="btn btn-primary" href="{% url 'category_add' %}">
-            カテゴリの追加
-            </a>
+            <a class="btn btn-primary" href="{% url 'category_add' %}">カテゴリの追加</a>
           </li>
         {% endif %}
       {% endif %}
