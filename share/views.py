@@ -81,6 +81,7 @@ def category_contents(request, category_id: int):
     category = get_object_or_404(Category, id=category_id)
     form = ContentCreateForm()
     template_name = "content_form.html"
+    #parent_category = category.parent ←すでにparentプロパティがあるので不要
 
     if request.method == "POST":
         form = ContentCreateForm(request.POST)
@@ -111,6 +112,10 @@ def content_edit(request, content_id: int):
     selected_top_category = Category.objects.filter(id=content.category.parent_id).first()
     form = ContentForm(instance=content)
     template_name = "content_edit.html"
+    parent_id = content.category.parent_id
+    parent_name = content.category.parent.name
+    category_id = content.category.id
+    category_name = Category.objects.filter(id=category_id).first().name
 
 
     if request.method == "POST":
@@ -131,6 +136,10 @@ def content_edit(request, content_id: int):
         "content": content,
         "nottop_categories": nottop_categories,
         "selected_top_category": selected_top_category,
+        "parent_id": parent_id,
+        "parent_name": parent_name,
+        "category_id": category_id,
+        "category_name": category_name,
     })
 
 @login_required_custom
@@ -140,11 +149,48 @@ def content_delete(request, content_id):
     return redirect("parent_contents_default")  # 適切なリダイレクト先に変更
 
 @login_required_custom
-def category_add(request,):
+def category_add_tabs(request,):
+
     
     form = CategoryCreateForm()
-    template_name = "category_add.html"
+    template_name = "category_add_tabs.html"
+
+    if request.method == "POST":
+        data = request.POST.copy()
+        print("POST内容:", request.POST)
+        if data.get("parent_id"):
+            data["parent_id"] = int(data["parent_id"])
+            print("form parent_id=",request.POST.get("parent_id"))
+            print("form name=",request.POST.get("name"))
+            form = CategoryCreateForm(data)
+        
+        else:
+            print("整数型でない（未選択など）")
+            print("form parent_id=",request.POST.get("parent_id"))
+            print("form name=",request.POST.get("name"))
+            form = CategoryCreateForm(request.POST)
+
+        if form.is_valid():                         # ← バリデーション
+                obj = form.save(commit=False)           # ← まだDBに書かない
+                # obj.updater_user_id = request.user.id # ← ログインIDを使うならここで上書き
+                obj.save()                              # ← DBにINSERT
+                return redirect("parent_contents_default")
+        else : print("form errors", form.errors)
+            
+    else:
+        form = CategoryCreateForm()
+
+    return render(request, template_name, {
+        "form": form,
+    })
+
+@login_required_custom
+def category_add_categories(request, parent_id: int):
+    
+    form = CategoryCreateForm()
+    template_name = "category_add_categories.html"
     top_categories = Category.objects.filter(parent_id__isnull=True)
+    parent_category = get_object_or_404(Category, id=parent_id)
 
     if request.method == "POST":
         data = request.POST.copy()
@@ -174,7 +220,9 @@ def category_add(request,):
     return render(request, template_name, {
         "form": form,
         "top_categories": top_categories,
+        "parent_category": parent_category,
     })
+
 
 @login_required_custom
 def category_edit(request):
@@ -239,3 +287,58 @@ def content_add_with_category(request, category_id: int):
         "category_id": category.id,   # ← ここは整数のまま渡す
         "parent_id": parent_id,
     })
+
+
+def content_view(request, content_id: int):
+    content = get_object_or_404(Content, id=content_id)
+    template_name = "content_view.html"
+
+    return render(request, template_name, {
+        "content": content,
+    })
+
+def search_results(request):
+    query = request.GET.get("q", "")
+    results = []
+
+    if query:
+        results = Content.objects.filter(title__icontains=query).order_by("contents_display_order")
+
+    return render(request, "search_results.html", {
+        "query": query,
+        "results": results,
+    })
+
+'''
+def contents_all(request):
+    contents_qs = (
+        Content.objects
+        .select_related("category")       # category.name をテンプレで使う前提
+        .all()
+        .order_by("contents_display_order") #表示順を追加
+    )
+
+    template_name = "contents_all.html"
+
+    return render(request, template_name, {
+        "contents": contents_qs,     # 右側テーブル
+    })
+'''
+
+def contents_filtered_by_category(request, category_id: int,):
+    category = get_object_or_404(Category, id=category_id)
+    contents_qs = (
+        Content.objects
+        .select_related("category")       # category.name をテンプレで使う前提
+        .filter(category=category)
+        .order_by("id") #表示順を追加
+    )
+    print("contents_qs=",contents_qs)
+
+    template_name = "contents_filtered_by_category.html"
+
+    return render(request, template_name, {
+        "contents": contents_qs,     # 右側テーブル
+        "category": category,
+    })
+    

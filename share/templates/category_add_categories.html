@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{%  load static %}
+{% block title %}カテゴリ追加{% endblock %}
+
+<!--breadcrumb-->
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="h4 mb-3">カテゴリ追加</h1>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+
+    <!--▼カテゴリの親ID設定（子カテゴリ）-->
+    <!--<div class="form-label">※以下画像の「TOP・お知らせ」に相当するタブや、「あいさつ」に相当するカテゴリを追加します</div>
+    <img src="{% static 'category_image.png' %}" alt="Category Image" class="img-fluid mb-3" style="max-width: 400px;">>-->
+
+    <div class="mb-3">
+        <!--選択済みの親カテゴリをデフォルトで選択済みに-->        
+        <input type="hidden" name="parent_id" id="parent_id" value="{{parent_category.id}}">
+    </div>
+
+    <!--▼カテゴリの追加フォーム-->
+    <label  for="id_name" name="new_category" id="id_name" class="form-label" >新しいカテゴリ名</label>
+    {{ form.name }}
+    <div class="text-danger small">{{ form.name.errors }}</div>
+    <div class="mb-3">
+    <!--▲カテゴリの追加フォーム-->
+
+    <!--▼左メニュー表示順の設定-->
+    <div class="mb-3">
+        <label for="id_category_display_order_leftmenues" class="form-label">表示順（左メニュー）</label>
+        {{ form.category_display_order_leftmenues }}
+    </div>
+    <!--▲左メニュー表示順の設定-->
+
+
+
+
+</div>
+
+<button type="submit" class="btn btn-primary">登録する</button>
+
+</form>
+</div>
+
+
+{% endblock %}

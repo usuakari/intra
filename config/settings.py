@@ -63,6 +63,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "share.context_processors.parent_categories",
+                "share.context_processors.current_ids_processor",
             ],
         },
     },

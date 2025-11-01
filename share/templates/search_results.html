@@ -1,0 +1,23 @@
+{% extends "base.html"%}
+{% block title %}コンテンツ表示{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h1 class="h4 mb-3">検索結果</h1>
+
+  {% if results %}
+    <p>{{ results|length }} 件の結果が見つかりました。</p>
+    <ul class="list-group">
+      {% for content in results %}
+        <li class="list-group-item">
+          <a href="{% url 'content_view' content_id=content.id %}">{{ content.title }}</a>
+          <br>
+          <small class="text-muted">カテゴリ: {{ content.category.parent.name }} - {{ content.category.name }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>該当するコンテンツが見つかりませんでした。</p>
+  {% endif %}
+
+{% endblock %}

@@ -2,6 +2,12 @@
 {% extends "base.html" %}
 {% block title %}コンテンツ追加{% endblock %}
 
+{% block crumblist %}
+<li class="breadcrumb-item"><a href={% url "parent_contents" parent_id=category.parent.id %}>{{category.parent.name}}</a></li>
+<li class="breadcrumb-item"><a href={% url "contents_filtered_by_category" category_id=category.id %}>{{category.name}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">コンテンツ追加</li>
+{% endblock %}
+
 {% block content %}
 <div class="container my-4">
   <h1 class="h4 mb-3">コンテンツ追加フォーム</h1>

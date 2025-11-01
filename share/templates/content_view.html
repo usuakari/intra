@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+{% block title %}コンテンツ表示{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h1 class="h4 mb-3">コンテンツ表示</h1>
+
+  <div class="mb-3">
+    <label class="form-label"><strong>カテゴリ:</strong></label>
+    <div>{{ content.category.parent.name }} - {{ content.category.name }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label"><strong>タイトル:</strong></label>
+    <div>{{ content.title }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label"><strong>概要説明:</strong></label>
+    <div>{{ content.description }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label"><strong>ファイルURL:</strong></label>
+    <div>{{ content.file_url }}</div>
+    </div>
+    <div class="mb-3">
+    <label class="form-label"><strong>ファイル種別:</strong></label>
+    <div>{{ content.file_type }}</div>
+    </div>
+</div>
+
+{% endblock %}

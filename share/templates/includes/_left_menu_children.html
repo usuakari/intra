@@ -18,12 +18,16 @@
       {% if user.is_authenticated %}
         {% if forloop.last %}
           <li >
-            <a class="btn btn-primary" href="{% url 'category_add' %}">カテゴリの追加</a>
+            <a class="btn btn-primary" href="{% url 'category_add_categories' parent_id=parent.id %}">カテゴリの追加</a>
           </li>
         {% endif %}
       {% endif %}
     {% empty %}
-      <li class="list-group-item text-muted">子カテゴリはありません</li>
+      <li class="list-group-item text-muted">子カテゴリはありません
+        <li >
+          <a class="btn btn-primary" href="{% url 'category_add_categories' parent_id=parent.id %}">カテゴリの追加</a>
+        </li>
+      </li>
     {% endfor %}
   </ul>
 </div>

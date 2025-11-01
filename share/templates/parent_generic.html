@@ -47,7 +47,9 @@
                 <a class="btn btn-primary" href="{% url 'edit' content_id=c.id %}">編集</a>
               </td>
               {% endif %}
-              <td class="fw-semibold">{{ c.title }}</td>
+              <td>
+                <a class="fw-semibold" href="{% url 'content_view' content_id=c.id %}">{{ c.title }}</a>
+              </td>
               <td>{{ c.updater_user_id }}</td>
               <td>{{ c.updated_at|date:"Y-m-d H:i" }}</td>
               <td>{{ c.file_type }}</td>

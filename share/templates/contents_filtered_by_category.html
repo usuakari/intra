@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }} のコンテンツ | 社内ポータル{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">{{ category.name }} のコンテンツ</h1>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle">
+      <thead class="table-light">
+        <!-- テーブルヘッダー -->
+        <tr>
+          {% if user.is_authenticated %}
+            <th>表示順</th>
+            <th></th>
+          {% endif %}
+          <th>タイトル</th>
+          <th>更新者ID</th>
+          <th>更新日</th>
+          <th>ファイル種別</th>
+          <th>リンク</th>
+          {% if user.is_authenticated %}
+            <th></th>
+          {% endif %}
+        </tr>
+      </thead>
+
+      <!-- テーブルボディ -->
+      <tbody>
+        <!---->
+        {% for c in contents %}
+          <tr>
+            {% if user.is_authenticated %}
+            <td>
+              {{ c.contents_display_order }}
+            </td>
+            <td>
+              <a class="btn btn-primary" href="{% url 'edit' content_id=c.id %}">編集</a>
+            </td>
+            {% endif %}
+            <td>
+              <a class="fw-semibold" href="{% url 'content_view' content_id=c.id %}">{{ c.title }}</a>
+            </td>
+            <td>{{ c.updater_user_id }}</td>
+            <td>{{ c.updated_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ c.file_type }}</td>
+            <td>
+              {% if c.file_url %}
+                <a class="btn btn-sm btn-outline-primary" href="{{ c.file_url }}" target="_blank" rel="noopener">開く</a>
+              {% else %}
+                <span class="text-muted">-</span>
+              {% endif %}
+              {% if user.is_authenticated %}
+              <td>
+              <a class="btn btn-outline-danger" href="{% url 'content_delete' content_id=c.id %}">削除</a>
+              </td>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="text-muted">コンテンツはありません</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

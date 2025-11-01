@@ -9,9 +9,15 @@ def parent_categories(request):
         "parent_categories": Category.objects.filter(parent_id__isnull=True).order_by("category_display_order_tabs")
     }
 
-def parent_id_processor(request):
-    """現在の親カテゴリIDをテンプレートに渡す"""
-    parent_id = request.resolver_match.kwargs.get("parent_id")
+def current_ids_processor(request):
+    """親カテゴリID・カテゴリIDの両方をテンプレートに渡す"""
+    match = request.resolver_match
+    if not match:
+        return {}
+
+    kwargs = match.kwargs
+
     return {
-        "current_parent_id": parent_id
+        "current_parent_id": kwargs.get("parent_id"),
+        "current_category_id": kwargs.get("category_id"),
     }

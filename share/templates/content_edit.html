@@ -3,6 +3,12 @@
 {% load static %}
 {% block title %}コンテンツ編集{% endblock %}
 
+{% block crumblist %}
+<li class="breadcrumb-item"><a href={% url "parent_contents" parent_id=parent_id %}>{{parent_name}}</a></li>
+<li class="breadcrumb-item"><a href={% url "contents_filtered_by_category" category_id=category_id %}>{{category_name}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">コンテンツ編集</li>
+{% endblock %}
+
 {% block content %}
 <div class="container my-4">
   <h1 class="h4 mb-3">コンテンツ編集フォーム</h1>
