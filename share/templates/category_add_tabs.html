@@ -3,6 +3,11 @@
 {% block title %}タブ追加{% endblock %}
 
 <!--breadcrumb-->
+{% block crumblist %}
+<li class="breadcrumb-item"><a href={% url "parent_contents" parent_id=8  %}>{{category.parent.name}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">タブ追加</li>
+{% endblock %}
+<!--breadcrumb-->
 
 {% block content %}
 <div class="container my-4">
