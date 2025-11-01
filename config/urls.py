@@ -37,5 +37,6 @@ urlpatterns = [
     path("content_view/<int:content_id>", views.content_view, name="content_view"),
     path("search/", views.search_results, name="search_results"),
     path("contents/category/<int:category_id>/", views.contents_filtered_by_category, name="contents_filtered_by_category"),
-
+    path("all_contents/", views.all_contents, name="all_contents"),
+    path("selected_contents/", views.selected_contents, name="selected_contents"),
 ]

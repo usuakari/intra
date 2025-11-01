@@ -1,0 +1,39 @@
+{% extends "base.html"%}
+{% block title %}すべてのコンテンツ表示{% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+    <h1 class="h4 mb-3">すべてのコンテンツ</h1>
+</div>
+
+
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>タイトル</th>
+                    <th>カテゴリ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for content in all_contents %}
+                    <tr>
+                        <td>
+                            <a class="fw-semibold" href="{% url 'content_view' content_id=content.id %}">{{ content.title }}</a>
+                        </td>
+
+                        <td>{{ content.category.parent.name }} - {{ content.category.name }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">表示するコンテンツがありません。</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </tabele>
+    </div>
+
+
+
+{% endblock %}

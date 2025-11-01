@@ -341,4 +341,33 @@ def contents_filtered_by_category(request, category_id: int,):
         "contents": contents_qs,     # 右側テーブル
         "category": category,
     })
+
+def all_contents(request):
+    contents_qs = (
+        Content.objects
+        .select_related("category")       # category.name をテンプレで使う前提
+        .all()
+        .order_by("id") #表示順を追加
+    )
+
+
+    template_name = "all_contents.html"
+
+    return render(request, template_name, {
+        "all_contents": contents_qs,     
+    })
     
+def selected_contents(request):
+    contents_qs = (
+        Content.objects
+        .select_related("category")       # category.name をテンプレで使う前提
+        .all()
+        .order_by("id") #表示順を追加
+    )
+
+
+    template_name = "all_contents.html"
+
+    return render(request, template_name, {
+        "all_contents": contents_qs,     
+    })
