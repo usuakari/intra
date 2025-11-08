@@ -39,7 +39,7 @@
 ・MySQLから、社用端末にDBを配置して利用可能か？
     https://terakoya.sejuku.net/question/detail/60311
     C:\programming\intra\db.sqlite3
-    ⇒DBの入れ替え
+    ⇒DBの入れ替え完了
 
 ・【未】PW再設定（メールで再設定画面のリンク）
 
