@@ -39,5 +39,7 @@ urlpatterns = [
     path("contents/category/<int:category_id>/", views.contents_filtered_by_category, name="contents_filtered_by_category"),
     path("all_contents/", views.all_contents, name="all_contents"),
     path("selected_contents/", views.selected_contents, name="selected_contents"),
-    path("qr_code_generator/", views.qr_code_generator, name="qr_code_generator"),
+    path("qr/", views.qr_generator, name="qr_generator"),
+    path("qr/download/", views.qr_download, name="qr_download"),
+    
 ]

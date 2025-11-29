@@ -1,0 +1,34 @@
+<!-- templates/qrapp/qr_generator.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>QRコード生成</title>
+</head>
+<body>
+    <h1>QRコード生成</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">QRコードを生成</button>
+    </form>
+
+    {% if final_url %}
+        <h2>生成されたURL</h2>
+        <p>{{ final_url }}</p>
+    {% endif %}
+
+    {% if qr_base64 %}
+        <h2>QRコード</h2>
+        <img src="data:image/png;base64,{{ qr_base64 }}" alt="QRコード">
+
+        <p>
+            <!-- 生成したURL文字列をそのまま download view に渡す -->
+            <a href="{% url 'qr_download' %}?data={{ final_url|urlencode }}">
+                QRコード画像をダウンロード
+            </a>
+        </p>
+    {% endif %}
+</body>
+</html>

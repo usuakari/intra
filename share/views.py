@@ -10,8 +10,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from functools import wraps
 from django.http import HttpResponse
 from django.forms import modelformset_factory
-from django.contrib.auth import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-
+from django.shortcuts import render
+from .forms_qr import UrlParamForm
+import qrcode
+from io import BytesIO
+import base64
+from urllib.parse import urlencode
+from django.http import HttpResponse
 
 '''class TopView(TemplateView):
     template_name = "top.html"
@@ -374,6 +379,72 @@ def selected_contents(request):
         "all_contents": contents_qs,     
     })
 
-def qr_code_generator(request):
-    template_name = "qr_code_generator.html"
-    return render(request, template_name, {})
+def qr_generator(request):
+    qr_base64 = None
+    final_url = None
+
+    if request.method == "POST":
+        form = UrlParamForm(request.POST)
+        if form.is_valid():
+            base_url = form.cleaned_data['base_url']
+            param_key_mkcd = form.cleaned_data['param_key_mkcd']
+            param_value_mkcd = form.cleaned_data['param_value_mkcd']
+            param_key_tscd = form.cleaned_data['param_key_tscd']
+            param_value_tscd = form.cleaned_data['param_value_tscd']
+
+            #1) 最終URLを組み立てる
+            if param_key_mkcd and param_value_mkcd and param_key_tscd and param_value_tscd:
+                query = urlencode({
+                    param_key_mkcd: param_value_mkcd,
+                    param_key_tscd: param_value_tscd,
+                })
+                final_url = f"{base_url}?{query}"
+            else:
+                final_url = base_url
+            #2) QRコードを生成する
+            qr = qrcode.QRCode(version=1, box_size=10, border=4,)
+            qr.add_data(final_url)
+            qr.make(fit=True)
+            img = qr.make_image(fill='black', back_color='white')
+            #3) 画像をメモリ上にPNGとして保存
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            img_bytes = buffer.getvalue()
+
+            #4) Base64に変換してテンプレートへ
+            qr_base64 = base64.b64encode(img_bytes).decode('utf-8')
+    else:
+        form = UrlParamForm()
+
+    context = {
+        'form': form,
+        'qr_base64': qr_base64,
+        'final_url': final_url,
+    }
+    return render(request, 'qr_generator.html', context)
+
+def qr_download(request):
+    # GETパラメータからdataを受け取る想定 ?data=...
+    data = request.GET.get("data")
+    if not data:
+        return HttpResponse("no data", status=400)
+
+    # QRコード作成は上とほぼ同じ
+    qr = qrcode.QRCode(
+        version=1,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    img_bytes = buffer.getvalue()
+
+    # Content-Type と Content-Disposition を設定
+    response = HttpResponse(img_bytes, content_type="image/png")
+    response["Content-Disposition"] = 'attachment; filename="qrcode.png"'
+    return response
