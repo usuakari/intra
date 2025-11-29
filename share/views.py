@@ -10,6 +10,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from functools import wraps
 from django.http import HttpResponse
 from django.forms import modelformset_factory
+from django.contrib.auth import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+
 
 '''class TopView(TemplateView):
     template_name = "top.html"
@@ -371,3 +373,7 @@ def selected_contents(request):
     return render(request, template_name, {
         "all_contents": contents_qs,     
     })
+
+def qr_code_generator(request):
+    template_name = "qr_code_generator.html"
+    return render(request, template_name, {})

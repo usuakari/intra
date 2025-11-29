@@ -18,7 +18,7 @@ class Administrator(models.Model):
     )
 
     class Meta:
-        db_table = "管理者"
+        db_table = "administrator"
         verbose_name = "管理者"
         verbose_name_plural = "管理者"
 
@@ -61,7 +61,7 @@ class Category(models.Model):
         return None
 
     class Meta:
-        db_table = "カテゴリ"
+        db_table = "categories"
         verbose_name = "カテゴリ"
         verbose_name_plural = "カテゴリ"
 
@@ -126,7 +126,7 @@ class Content(models.Model):
     )
 
     class Meta:
-        db_table = "コンテンツ"
+        db_table = "contents"
         verbose_name = "コンテンツ"
         verbose_name_plural = "コンテンツ"
 
